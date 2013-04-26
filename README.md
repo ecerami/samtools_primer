@@ -43,8 +43,7 @@ And, add the executables to your path.  For example, I have modified my `.bash_p
 
 As an optional, but recommended step, copy the man page for `samtools.1` to one of your man page directories (1). 
 
-
-## Tutorial:  A Complete Workflow in *E. coli*
+## Tutorial:  A Complete Workflow for Identifying SNPs in E. coli
 
 To illustrate the use of SAMtools, the remainder of this document focuses on using SAMtools within a complete sample workflow for next-generation sequence analysis.  For simplicity, the tutorial uses a small set of simulated reads from *E. coli*.  I have chosen *E. coli* because its genome is quite small -- 4,649 kilobases, with 4,405 genes, and its entire genome fits into a single **FASTA** file of 4.8 megabytes.  The sample read file is also small -- just 790K -- enabling you to download both within a few minutes.  
 
@@ -63,11 +62,51 @@ The workflow below is organized into six steps:
 
 Steps 3-6 are focused on the use of SAMtools.  Steps 1-2 require the use of other tools.  Steps 1-2 do, however provide important context, may be helpful in the future, and are therefore described below.  That said, you are not required to actually perform any of steps yourself now, as intermediate files from these steps are available for download.  You can download these intermediate files directly and proceed with steps 3-6.
 
-### Generate Simulated Reads for *E. Coli*
+### Step 1:  Generate Simulated Reads
 
-First, we need a small set of sample read data.  A number of tools, including ArtificialFastqGenerator, Mason, and SimSeq, will generate artificial or simulated sequence data for you.  For this tutorial, I chose to use the wgsim tool (created by Heng Li, also the creator of SAMtools).
+First, we need a small set of sample read data.  A number of tools, including [ArtificialFastqGenerator](http://sourceforge.net/p/artfastqgen/wiki/Home/), [SimSeq](https://github.com/jstjohn/SimSeq), will generate artificial or simulated sequence data for you.  For this tutorial, I chose to use the [wgsim](https://github.com/lh3/wgsim) tool (created by Heng Li, also the creator of SAMtools).
 
+The command line usage for wgsim is:
+
+	wgsim [options] <in.ref.fa> <out.read1.fq> <out.read2.fq>
   
+By default, wgsim therefore reads in a reference genome in the **FASTA** format, and generates simulated **paired-end** reads in the **FASTQ** format.
+
+If you specify the full *e. coli* genome, wgsim will generate simulated reads across the entire genome.  However, for the tutorial, I chose to restrict the simulated reads to just the first 1,000 bases of the *e. coli* genome.  To do so, I  extracted the first 1K bases of the *e. coli* genome, placed these within a new file:  `NC_008253_truncated.fna`, and ran:
+
+	wgsim -N1000 -S1 genomes/NC_008253_truncated.fna output/sim_reads.fq /dev/null
+	
+Command line options are described below:
+
+* `-N1000`:  directs wgsim to generate 1,000 simulated reads (default is set to:  1,000,000).
+* `-S1`:  specifies a seed for the wgsim random number generator;  by specifying a seed value, one can reproducibily create simulated reads.
+* `/dev/null`:  wgswim requires that you specify two output files (one for each set of pair-end reads).  However, if you set the second output to `/dev/null`, all data for the second set of reads will be discarded, and you can effectively generate single-end read data only.
+
+wgsim will then output:
+
+	[wgsim] seed = 1
+	[wgsim_core] calculating the total length of the reference sequence...
+	[wgsim_core] 1 sequences, total length: 1000
+	gi|110640213|ref|NC_008253.1|	736	T	G	-
+
+This indicates that wgsim has read in a reference sequence of 1K and has generated simulated reads to support exactly one artificial SNP, a T->G at position 736.  By default, all artificial reads have a read length of 70, and the reads are written in the FASTQ format. For illustrative purposes, the first read is shown below:
+
+	@gi|110640213|ref|NC_008253.1|_418_952_1:0:0_1:0:0_0/1
+	CCAGGCAGTGGCAGGTGGCCACCGTCCTCTCTGCCCCCGCCAAAATCACCAACCATCTGGTAGCGATGAT
+	+
+	2222222222222222222222222222222222222222222222222222222222222222222222
+
+Note that in the FASTQ format, the first line specifies a unique sequence identifier, the second line specifies the sequence, and the fourth line specifies the **phred-scaled** quality scores for each base.  wgsim does not generate artificial quality scores, and all bases are simply set to 2, indicative of ...
+
+You can download the artificial reads from github if you like, but this is not required for the rest of the tutorial.
+
+[- explain fastq...] 
+[- explain example reads...]
+[- add links to real data files:  genomes + simulated reads...]
+
+### Step 2:  Align Reads to a Reference Genome
+
+
 
 ## Footnotes
 
@@ -87,17 +126,25 @@ this will display the current set of man paths.  `samtools.1` is considered a "s
 
 **BCF Format**:  Binary call format.  Binary, compressed format for storing VCF data. 
 
-**FASTA Format**:  text format for storing raw sequence data.  For example, the FASTA file at:  http://www.ncbi.nlm.nih.gov/nuccore/NC_008253 contains entire genome for Escherichia coli 536. 
+**FASTA Format**:  text format for storing raw sequence data.  For example, the FASTA file at:  [http://www.ncbi.nlm.nih.gov/nuccore/NC_008253](http://www.ncbi.nlm.nih.gov/nuccore/NC_008253) contains entire genome for Escherichia coli 536. 
 
 **FASTQ Format**:  text format for storing raw sequence data along with quality scores for each base.
 
+**paired-end sequencing**:  sequencing process where both ends of a single DNA or RNA fragment are sequenced, but the intermediate region is not sequenced.  Particularly useful for identifying structural rearrangements, including gene fusions.
+
 **Phred quality score**:  a score assigned to each base within a sequence, quantifying the accuracy of the base call.  Higher values correspond to higher accuracy. 
+
+**read-length**:  the number of base pairs that are sequenced in an individual sequence read.
+
+**read-depth**:  the number of sequence reads that pile up at the same genomic location.  For example, 30X read-depth coverage indicates that the genomic location is covered by 30 independent sequencing reads.  Increased read-depth translates into higher confidence for calling genomic variants.
 
 **SAM Flag**:  a single integer value (e.g. 16), which encodes multiple elements of meta-data regarding a read and its alignment.  Elements include: whether the read is one part of a paired-end read, whether the read aligns to the genome, and whether the read aligns to the forward or reverse strand of the genome.  A [useful online utility](http://picard.sourceforge.net/explain-flags.html) decodes a single SAM flag value into plain English.
 
 **SAM Format**:  Text file format for storing sequence alignments against a reference genome.  See also BAM Format.
 
 **samtools**:  widely used, open source command line tool for manipulating SAM/BAM files.  Includes options for converting, sorting, indexing and viewing SAM/BAM files.  The samtools distribution also includes bcftools, a set of command line tools for identifying and filtering genomics variants.  Created by Heng Li, currently of the Broad Institute.
+
+**single-read sequencing**:  sequencing process where only one end of a single DNA or RNA fragment is sequenced.  Contrast with **paired-end** sequencing.
 
 **VCF Format**:  Variant call format.  Text file format for storing genomic variants, including single nucleotide polymorphisms, insertions, deletions and structural rearrangement.
 
