@@ -96,11 +96,12 @@ This indicates that wgsim has read in a reference sequence of 1K and has generat
 	+
 	2222222222222222222222222222222222222222222222222222222222222222222222
 
-Note that in the FASTQ format, the first line specifies a unique sequence identifier, the second line specifies the sequence, and the fourth line specifies the **phred-scaled** quality scores for each base.  wgsim does not generate artificial quality scores, and all bases are simply set to 2, indicating that the bases have a 0.01995 probability of being called incorrectly (see **Phred score** details in the glossary).
+Note that in the FASTQ format, the first line specifies a unique sequence identifier, the second line specifies the sequence, and the fourth line specifies the **Phred quality score** for each base.  wgsim does not generate artificial quality scores, and all bases are simply set to 2, indicating that the bases have a 0.01995 probability of being called incorrectly (for additional details, refer to **Phred quality scores** in the glossary.)
 
 You can download the [artificial reads from github](https://raw.github.com/ecerami/samtools_primer/master/tutorial/simulated_reads/sim_reads.fq) if you like, but this is not required for the rest of the tutorial.
 
 ### Step 2:  Align Reads to a Reference Genome
+
 
 
 
@@ -111,6 +112,7 @@ You can download the [artificial reads from github](https://raw.github.com/ecera
 	man -w
 
 this will display the current set of man paths.  `samtools.1` is considered a "section 1" man page, reserved for user commands.  You therefore need to copy it into a directory named man1.  For example, on my system, I copied `samtools.1` to:  /usr/local/share/man/man1/.
+
 
 ## Glossary
 
