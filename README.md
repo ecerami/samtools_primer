@@ -72,7 +72,7 @@ The command line usage for wgsim is:
   
 By default, wgsim therefore reads in a reference genome in the **FASTA** format, and generates simulated **paired-end** reads in the **FASTQ** format.
 
-If you specify the full *e. coli* genome, wgsim will generate simulated reads across the entire genome.  However, for the tutorial, I chose to restrict the simulated reads to just the first 1,000 bases of the *e. coli* genome.  To do so, I  extracted the first 1K bases of the *e. coli* genome, placed these within a new file:  `NC_008253_truncated.fna`, and ran:
+If you specify the full [*e. coli* genome](https://raw.github.com/ecerami/samtools_primer/master/tutorial/genomes/NC_008253.fna), wgsim will generate simulated reads across the entire genome.  However, for the tutorial, I chose to restrict the simulated reads to just the first 1,000 bases of the *e. coli* genome.  To do so, I  extracted the first 1K bases of the *e. coli* genome, placed these within a new file:  [NC_008253_truncated.fna](https://raw.github.com/ecerami/samtools_primer/master/tutorial/genomes/NC_008253_1K.fna), and ran:
 
 	wgsim -N1000 -S1 genomes/NC_008253_truncated.fna output/sim_reads.fq /dev/null
 	
@@ -96,13 +96,9 @@ This indicates that wgsim has read in a reference sequence of 1K and has generat
 	+
 	2222222222222222222222222222222222222222222222222222222222222222222222
 
-Note that in the FASTQ format, the first line specifies a unique sequence identifier, the second line specifies the sequence, and the fourth line specifies the **phred-scaled** quality scores for each base.  wgsim does not generate artificial quality scores, and all bases are simply set to 2, indicative of ...
+Note that in the FASTQ format, the first line specifies a unique sequence identifier, the second line specifies the sequence, and the fourth line specifies the **phred-scaled** quality scores for each base.  wgsim does not generate artificial quality scores, and all bases are simply set to 2, indicating that the bases have a 0.01995 probability of being called incorrectly (see **Phred score** details in the glossary).
 
-You can download the artificial reads from github if you like, but this is not required for the rest of the tutorial.
-
-[- explain fastq...] 
-[- explain example reads...]
-[- add links to real data files:  genomes + simulated reads...]
+You can download the [artificial reads from github](https://raw.github.com/ecerami/samtools_primer/master/tutorial/simulated_reads/sim_reads.fq) if you like, but this is not required for the rest of the tutorial.
 
 ### Step 2:  Align Reads to a Reference Genome
 
@@ -132,7 +128,7 @@ this will display the current set of man paths.  `samtools.1` is considered a "s
 
 **paired-end sequencing**:  sequencing process where both ends of a single DNA or RNA fragment are sequenced, but the intermediate region is not sequenced.  Particularly useful for identifying structural rearrangements, including gene fusions.
 
-**Phred quality score**:  a score assigned to each base within a sequence, quantifying the accuracy of the base call.  Higher values correspond to higher accuracy. 
+**Phred quality score**:  a score assigned to each base within a sequence, quantifying the probability that the base was called incorrectly.  For example, a Phred Q score of 10 indicates that the base has a 0.1 probability of being incorrect, whereas a Phred score of 20 indicates that the base has a 0.01 probability of being incorrect.  Higher Phred score therefore correspond to higher accuracy.  In the **FASTQ format**, Phred scores are represented as single ASCII letters.  For details on translating between Phred scores and ASCII values, refer to [Table 1 of this useful blog post from Damian Gregory Allis](http://www.somewhereville.com/?p=1508).
 
 **read-length**:  the number of base pairs that are sequenced in an individual sequence read.
 
