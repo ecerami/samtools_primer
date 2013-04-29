@@ -108,7 +108,9 @@ To align, use the command:
 
 	bowtie -S e_coli simulated_reads/sim_reads.fq alignments/sim_reads_aligned.sam
 	
-This directs bowtie to align the simulated reads against the *e_coli* reference genome, and to output the alignments in the -S *SAM file format*.  The pre-built *e-coli* genome is bundled with the bowtie by default, but I have also included it within the github repository accompanying this primer.  For additional details on using bowtie, refere to the [online manual](http://bowtie-bio.sourceforge.net/manual.shtml).
+This directs bowtie to align the simulated reads against the *e_coli* reference genome, and to output the alignments in the -S **SAM file format**.  The pre-built *e-coli* genome is bundled with the bowtie by default, but I have also included it within the github repository accompanying this primer.  For additional details on using bowtie, refer to the [online manual](http://bowtie-bio.sourceforge.net/manual.shtml).
+
+[describe first few lines of the SAM file]
 
 ## Footnotes
 
