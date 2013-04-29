@@ -104,7 +104,11 @@ You can download the [artificial reads from github](https://raw.github.com/ecera
 
 The next step is to align the artificial reads to the reference genome for *e. coli.*  For this, I have chosen to use the widely used [Bowtie](http://bowtie-bio.sourceforge.net/index.shtml) aligner, from Johns Hopkins University.  Again, you need not actually perform this step to use SAMtools, but it does provide imporant context, so I have included the details.
 
-[- add bowtie command line usage here...]
+To align, use the command:
+
+	bowtie -S e_coli simulated_reads/sim_reads.fq alignments/sim_reads_aligned.sam
+	
+This directs bowtie to align the simulated reads against the *e_coli* reference genome, and to output the alignments in the -S *SAM file format*.  The pre-built *e-coli* genome is bundled with the bowtie by default, but I have also included it within the github repository accompanying this primer.  For additional details on using bowtie, refere to the [online manual](http://bowtie-bio.sourceforge.net/manual.shtml).
 
 ## Footnotes
 
