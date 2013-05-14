@@ -227,6 +227,48 @@ Following the 11 mandatory fields, each alignment can also have a variable numbe
 		</td>
 </table>
 
+### Step 3:  Convert the Aligned Reads from SAM to BAM
+
+Now that you understand where alignments come from, know how to interpret SAM fields, and have a sample [SAM file to play with](tutorial/alignments/sim_reads_aligned.sam), you are finally read to tackle SAMtools.  As described above, our goal is to identify the set of genomic variants within the *e. coli* data set.  To do so, our first step is to convert the SAM file to BAM.  This is an important prerequisite, as all the downstream steps, including the identification of genomic variants and visualization of reads, require BAM as input.
+
+To convert from SAM to BAM, use the samtools `view` command:
+
+	samtools view -b -S -o alignments/sim_reads_aligned.bam alignments/sim_reads_aligned.sam
+
+* `-b`: indicates that the output is BAM.
+* `-S`:  indicates that the input is SAM.
+* `-o`:  specified the name of the output file.
+
+BAM files are stored in a compressed, binary format, and cannot be viewed directly.  However, you can use the same `view` command to display all aligments.  For example, running:
+
+	samtools view alignments/sim_reads_aligned.bam | more
+
+will display all your reads in the unix `more` paginated style.
+
+You can also use `view` to only display reads which match your specific filtering criteria.  For example:
+
+	samtools view -f 4 alignments/sim_reads_aligned.bam | more
+
+* `-f INT`:  extracts only those reads which match the specified SAM flag.  In this case, we filter for only those reads with flag value of 4 = read fails to map to the reference genome.
+
+or:
+
+	samtools view -F 4 alignments/sim_reads_aligned.bam | more
+
+* `-F INT`:  removes reads which match the specified SAM flag.  In this case, we remove reads with flag value of 4 = read fails to map to the reference genome, and display all other reads.
+
+You can also try out the `-c` option, which does not output the reads, but rather outputs the number of reads which match your criteria.  For example:
+
+	samtools view -c -f 4 alignments/sim_reads_aligned.bam
+
+indicates that 34 of our artificial reads failed to align to the reference genome.
+
+Finally, you can use the `-q` parameter to indicate a minimal quality mapping filter.  For example:
+
+	samtools view -q 42 -c alignments/sim_reads_aligned.bam
+	
+outputs the total number of aligned reads (819) that have a mapping quality score of 42 or higher.
+
 ## References for Further Reading
 
 [This section is under construction.]
