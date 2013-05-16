@@ -269,6 +269,69 @@ Finally, you can use the `-q` parameter to indicate a minimal quality mapping fi
 	
 outputs the total number of aligned reads (819) that have a mapping quality score of 42 or higher.
 
+### Step 4:  Sort and Index the BAM File
+
+The next step is to sort and index the BAM file.  There are two options for sorting BAM files:  by read name (`-n`), and by genomic location (default).  As our goal is to call genomic variants, and this requires that we "pile-up" all matching reads within a specific genomic location, we sort by location:
+
+	samtools sort alignments/sim_reads_aligned.bam alignments/sim_reads_aligned.sorted
+
+This reads the BAM file from `alignments/sim_reads_aligned.bam` and writes the sorted file to:  `alignments/sim_reads_aligned.sorted.bam`.
+
+Once you have sorted your BAM file, you can then index it.  This enables tools, including SAMtools itself, and genomic viewers, such as the Broad Institute's Integrative Genomics Viewer (IGV), to perform efficient random access on the BAM file, resulting in greatly improved performance.  To do so, run:
+
+	samtools index alignments/sim_reads_aligned.sorted.bam
+
+This reads in the sorted BAM file, and creates a BAM index file with the `.bai` extension:  `sim_reads_aligned.sorted.bam.bai`.  Note that if you attempt to index a BAM file which has not been sorted, you will receive an error and indexing will fail.
+
+<table width=100%>
+	<tr bgcolor=#cccccc>
+		<th align=left>
+		A note about "Big Data"	
+		</th>
+	</tr>
+	<tr>
+		<td>
+		If you are already conversant with command line tools and possess basic programming skills,
+		you will quickly realize that there is nothing magical about next-generation sequence analysis.
+		You just need to learn the terms, the file forms, and the tools, and tie them all together.
+		However, there is one extra skill you will need to cultivate:  patience.  Once you move beyond
+		toy examples, and enter the world of real sequence data, all the concepts remain the same, but
+		all the files become much bigger, and everything takes longer -- usually a lot longer.  For
+		example, sorting and indexing a single human exome BAM file can easily take 2-4 hours,
+		depending on read depth and your computer set-up.  Worse, you may encounter an error after
+		two hours of processing, then make an adjustment, and wait another two hours to see if the
+		problem is fixed.  It's a bit like rolling giant boulders up a mountain, having the 
+		occasional one slip through, and starting all over from the beginning.
+		<br><br>
+		Many bioinformaticians hedge their patience by running next-generation sequencing pipelines
+		on large distributed compute clusters, so that they can at least move dozens of boulders at
+		once -- however, this is a topic for another primer.  Until then, my best advice is to get
+		the concepts right and start with small files.  Then, pack your patience and work your way
+		up to larger data sets.
+		</td>
+	</tr>
+</table>
+
+### Step 5:  Identify Genomic Variants
+
+Now, we are ready to identify the genomic variants from our reads.  Doing so requires two steps, and
+while one can easily pipe these two steps together, I have broken them out into two distinct steps below for 
+improved clarity.
+
+The first step is to use the SAMtools `mpileup` command to calculate the genotype likelihoods associated with
+each genomic variant:
+
+	samtools mpileup -g -f genomes/NC_008253.fna alignments/sim_reads_aligned.sorted.bam > variants/sim_variants.bcf
+
+* `-g`:  directs SAMtools to output genotype likelihoods in the **binary call format (BCF)**.  This is a compressed binary format.
+* `-f`:  directs SAMtools to use the specified reference genome.  A reference genome must be specified, and here we specify the reference genome for *e. coli*.
+
+The second step is to use `bcftools`, which is packaged with SAM
+
+[[what exactly is a genotype likelihood?]]
+
+### Step 6:  Visualize Reads and Genomics Variants
+
 ## References for Further Reading
 
 [This section is under construction.]
