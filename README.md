@@ -428,7 +428,7 @@ Based on the reference and the alternative sequences, SAMtools automatically cal
         
 This indicates that the GG genotype is very likely the true genotype in your sample.  The reads in your sample therefore support a Single Nucleotide Variant (SNV) from T to G at position 736.
 
-### <a id="step6">Step 6:  Visualize Reads and Genomics Variants</a>
+### Step 6:  Visualize Reads and Genomics Variants
 
 ## <a id="references">References for Further Reading</a>
 
@@ -446,7 +446,7 @@ This indicates that the GG genotype is very likely the true genotype in your sam
 
 * wgsim [repository on github](https://github.com/lh3/wgsim).
 
-## <a id="footnote">Footnotes</a>
+## <a id="footnotes">Footnotes</a>
 
 [1]  If you are uncertain where to copy the samtools man page, or are uncertain where your existing man pages are located, try typing:
 
