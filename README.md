@@ -431,7 +431,7 @@ This indicates that the GG genotype is very likely the true genotype in your sam
 
 ### Step 6:  Visualize Reads and Genomics Variants
 
-## <a id="references">References for Further Reading</a>
+## References for Further Reading
 
 * Bowtie2 [Home](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml), and [Online Manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml).
 
