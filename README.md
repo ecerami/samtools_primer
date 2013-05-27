@@ -14,6 +14,16 @@ by Ethan Cerami, Ph.D.
 
 SAMtools is a popular open-source tool, commonly used in next-generation sequence analysis.  This short primer provides an introduction to using SAMtools, and is geared towards those new to next-generation sequence analysis.  The primer is also designed to be self-contained and hands-on, meaning that you only need to install SAMtools, and no other tools, and sample data sets are provided.  Terms in **bold** are also explained in the short glossary at the end of the document.
 
+## Getting the Sample Data Files ##
+
+You can access all the sample data files for this primer from the [companion github repository](https://github.com/ecerami/samtools_primer).
+
+From the repository, you can:
+
+* browse and download individual files.
+* download a [complete zip file containing everything](https://github.com/ecerami/samtools_primer/archive/master.zip).
+* clone the entire repository.  If you have never used Github before, there is a [comprehensive tutorial to get you started](https://help.github.com/articles/set-up-git).
+
 ## Introduction to SAMtools and Next-Generation Sequence Analysis
 
 Next-generation sequencing refers to new, cheaper, high-throughput technologies for sequencing the DNA or RNA of a single sample or a group of samples.  A typical work-flow for next-generation sequence analysis is usually composed of multiple steps:
@@ -360,13 +370,64 @@ With this knowledge in hand, let's try to decipher the lone SNV we have identifi
 
 ![VCF Excerpt](https://raw.github.com/ecerami/samtools_primer/master/figs/vcf.png "VCF Excerpt")
 
-According to the data columns, the SNV was identified in *e. coli* at position 736, where the reference is T, and our sequencing data supports two possible alternative sequences:  G and C.        
+According to the data columns, the SNV was identified in *e. coli* at position 736, where the reference is T, and our sequencing data supports two possible alternative sequences:  G and C.  INFO DP=68 indicates that the position has a **read depth** of 68, and the FORMAT column indicates that all samples (in this case, just our one) will include a list of genotype likelihoods.  In our case, this results in the cryptic string:  "64,178,0,66,147,60".
+
+Based on the reference and the alternative sequences, SAMtools automatically calculates the following genotypes, in this exact order [5][6]:
+
+<table>
+<tr>
+<th>Genotype</th>
+<th>Phred Scaled Score</th>
+<th>Likelihood p-value</th>
+<tr>
+<td>TT</td>
+<td>64</td>
+<td>3.981-07</td>
+</tr>
+<tr>
+<td>TG</td>
+<td>178</td>
+<td>2.512e-18</td></tr>
+<tr>
+<td>GG</td>
+<td>0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>TC</td>
+<td>66</td>
+<td>2.512e-07</td></tr>
+<tr>
+<td>GC</td>
+<td>147</td>
+<td>1.995e-15</td></tr>
+<tr>
+<td>CC</td>
+<td>60</td>
+<td>1.000e-06</td></tr>
+</table>
+        
+This indicates that the GG genotype is very likely the true genotype in your sample.  The reads in your sample therefore support a Single Nucleotide Variant (SNV) from T to G at position 736.
 
 ### Step 6:  Visualize Reads and Genomics Variants
 
 ## References for Further Reading
 
-* Danecek P. et al.  **The variant call format and VCFtools**. Bioinformatics. 2011 Aug 1;27(15):2156-8.  [[PubMed](http://www.ncbi.nlm.nih.gov/pubmed/21653522)]
+* Bowtie2 [Home](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml), and [Online Manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml).
+
+* Danecek P. et al.  **The variant call format and VCFtools**. Bioinformatics. 2011 Aug 1;27(15):2156-8.  [[PubMed](http://www.ncbi.nlm.nih.gov/pubmed/21653522)].
+
+* Cock PJ et al.  **The Sanger FASTQ file format for sequences with quality scores, and the Solexa/Illumina FASTQ variants.**    Nucleic Acids Res. 2010 Apr;38(6)  [[PubMed](http://www.ncbi.nlm.nih.gov/pubmed/20015970)]
+
+* Li H. et al.  **The Sequence Alignment/Map format and SAMtools.**  Bioinformatics. 2009 Aug 15;25(16):2078-9.  [[PubMed](http://www.ncbi.nlm.nih.gov/pubmed/19505943)]
+
+* SAMTools [Home](http://samtools.sourceforge.net/), and [Manpage](http://samtools.sourceforge.net/samtools.shtml).
+
+* The SAM Format Specification [[PDF](http://samtools.sourceforge.net/SAM1.pdf)].
+
+* wgsim [repository on github](https://github.com/lh3/wgsim).
+
+
 
 ## Footnotes
 
@@ -381,6 +442,12 @@ this will display the current set of man paths.  `samtools.1` is considered a "s
 [3]  If you are curious, you can look up all the bowtie specific SAM fields in [bowtie2 manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) (refer to "optional fields" within the SAM output section.)
 
 [4]  The complete list of data types and predefined optional fields are provided in the official [SAM Format Specification](http://samtools.sourceforge.net/SAM1.pdf).
+
+[5]  How exactly is the order of genotypes determined?  This is formally specified in the [VCF version 4.1 specification](http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41).  According to the specification, each allele is assigned an index value, starting at 0.  For example, in a VCF row with reference T and alternative alleles G and C, we set T=0, G=1, and C=2.
+
+With three alleles, and the assumption that we are working with a diploid organism, there are (3 choose 2 or P(3,2)) permutations for a total of 6 permutations.  Each permutation is described by their index values.  For example, TT (both alleles are T) is described as (0,0), whereas CC (both alleles are C) is described as (2,2).  The ordering of each permutations is then determined by the equation:  `F(j,k) = (k*(k+1)/2)+j`, where j,k refer to allele index values.  For example, TT (0,0) = 0, whereas CC (2,2) = (2*(2+1)/2) + 2 = 5.
+
+[6] But, wait!  The *e. coli* genome is haploid, i.e. there is only a single set of genes.  And, there is therefore never the possibility of having two alleles at the same position.  SAMtools, however is designed to work with diploid genomes, and always calculates genotypes based on the assumption of a diploid genome.  To get around this assumption in our simulated case, we can assume that the *e. coli* reads come from a pool of samples, and the genotypes represent alternatives alleles present in the pool.
 
 ## Glossary
 
@@ -408,7 +475,7 @@ this will display the current set of man paths.  `samtools.1` is considered a "s
 
 **paired-end sequencing**:  sequencing process where both ends of a single DNA or RNA fragment are sequenced, but the intermediate region is not sequenced.  Particularly useful for identifying structural rearrangements, including gene fusions.
 
-**Phred-scaled probability**:  a scaled value (Q) used to compactly summarize a probability, where P = 10 ^ (-Q/10).  For example, a Phred Q score of 10 translates to probability (P) = 10^(-10/10) = 0.1.  Phred-scaled probabilities are common in next-generation sequencing, and are used to represent multiple types of quality metrics, including quality of base calls and quality of mappings, and probabilities associated with specific genotypes.  The name Phred refers to the original Phred base-calling software, which first used and developed the scale.
+**Phred-scaled probability**:  a scaled value (Q) used to compactly summarize a probability, where P = 10^(-Q/10).  For example, a Phred Q score of 10 translates to probability (P) = 10^(-10/10) = 0.1.  Phred-scaled probabilities are common in next-generation sequencing, and are used to represent multiple types of quality metrics, including quality of base calls and quality of mappings, and probabilities associated with specific genotypes.  The name Phred refers to the original Phred base-calling software, which first used and developed the scale.
 
 **Phred quality score**:  a score assigned to each base within a sequence, quantifying the probability that the base was called incorrectly.  Scores use a **Phred-scaled probability** metric.  For example, a Phred Q score of 10 translates to P=10^(-10/10) = 0.1, indicating that the base has a 0.1 probability of being incorrect.  Higher Phred score  correspond to higher accuracy.  In the **FASTQ format**, Phred scores are represented as single ASCII letters.  For details on translating between Phred scores and ASCII values, refer to [Table 1 of this useful blog post from Damian Gregory Allis](http://www.somewhereville.com/?p=1508).  The name Phred refers to the original Phred base-calling software, originally developed at Washington University.
 
