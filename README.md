@@ -4,7 +4,29 @@ by Ethan Cerami, Ph.D.
 
 **keywords:**  samtools, next-gen, next-generation, sequencing, bowtie, sam, bam, primer, tutorial, how-to, introduction
 
-## Work in Progress: This document is currently a work in progress.  It is not ready for use or release. ##
+* auto-gen TOC:
+{:toc}
+
+## Table of Contents
+
+* Revisions
+* About
+* Downloading the Sample Data Files
+* Introduction to SAMtools and Next-Generation Sequence Analysis
+* Downloading and Installing SAMtools
+* Tutorial: A Complete Workflow for Identifying SNPs in E. coli
+  * Step 1: Generate Simulated Reads
+  * Step 2: Align Reads to a Reference Genome
+  * Understanding the SAM Format
+  * Step 3: Convert the Aligned Reads from SAM to BAM
+  * Step 4: Sort and Index the BAM File
+  * Step 5: Identify Genomic Variants
+  * Understanding the VCF Format
+  * Step 6: Visualize Reads and Genomics Variants
+* References for Further Reading
+* Footnotes
+* Glossary
+* License
 
 ## Revisons ##
 
@@ -14,7 +36,7 @@ by Ethan Cerami, Ph.D.
 
 SAMtools is a popular open-source tool, commonly used in next-generation sequence analysis.  This short primer provides an introduction to using SAMtools, and is geared towards those new to next-generation sequence analysis.  The primer is also designed to be self-contained and hands-on, meaning that you only need to install SAMtools, and no other tools, and sample data sets are provided.  Terms in **bold** are also explained in the short glossary at the end of the document.
 
-## Getting the Sample Data Files ##
+## Downloading the Sample Data Files ##
 
 You can access all the sample data files for this primer from the [companion github repository](https://github.com/ecerami/samtools_primer).
 
