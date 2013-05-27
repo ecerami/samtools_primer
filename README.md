@@ -6,7 +6,7 @@ by Ethan Cerami, Ph.D.
 
 ## Table of Contents
 
-* <a id="revisons">Revisions</a>
+* [Revisons](#revisions)
 * About
 * Downloading the Sample Data Files
 * Introduction to SAMtools and Next-Generation Sequence Analysis
@@ -25,7 +25,7 @@ by Ethan Cerami, Ph.D.
 * Glossary
 * License
 
-## [Revisons](#revisions) ##
+## <a id="revisions">Revisions</a> ##
 
 * 0.1: April 23, 2013:  This document is **currently a work in progress.  It is not ready for release.**
 
