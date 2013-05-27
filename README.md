@@ -8,32 +8,33 @@ by Ethan Cerami, Ph.D.
 
 * [Revisons](#revisions)
 * [About](#about)
-* [Downloading the Sample Data Files](#data)
-* [Introduction to SAMtools and Next-Generation Sequence Analysis](#intro)
-* [Downloading and Installing SAMtools](#download)
-* [Tutorial: A Complete Workflow for Identifying SNPs in E. coli](#tutorial)
-  * [Step 1: Generate Simulated Reads](#step1)
-  * [Step 2: Align Reads to a Reference Genome](#step2)
-  * [Understanding the SAM Format](#sam_format)
-  * [Step 3: Convert the Aligned Reads from SAM to BAM](#step3)
-  * [Step 4: Sort and Index the BAM File](#step4)
-  * [Step 5: Identify Genomic Variants](#step5)
-  * [Understanding the VCF Format](#vcf)
-  * [Step 6: Visualize Reads and Genomics Variants](#vcf)
-* [References for Further Reading](#references)
+* [Downloading the Sample Data Files](#downloading-the-sample-data-files)
+* [Introduction to SAMtools and Next-Generation Sequence Analysis](#introduction-to-samtools-and-next-generation-sequence-analysis)
+* [Downloading and Installing SAMtools](#downloading-and-installing-samtools)
+* [Tutorial: A Complete Workflow for Identifying SNPs in E. coli](#tutorial--a-complete-workflow-for-identifying-snps-in-e-coli)
+  * [An Overview](#an-overview)
+  * [Step 1: Generate Simulated Reads](#step-1--generate-simulated-reads)
+  * [Step 2: Align Reads to a Reference Genome](#step-2--align-reads-to-a-reference-genome)
+  * [Understanding the SAM Format](#understanding-the-sam-format)
+  * [Step 3: Convert the Aligned Reads from SAM to BAM](#step-3--convert-the-aligned-reads-from-sam-to-bam)
+  * [Step 4: Sort and Index the BAM File](#step-4--sort-and-index-the-bam-file)
+  * [Step 5: Identify Genomic Variants](#step-5--identify-genomic-variants)
+  * [Understanding the VCF Format](#understanding-the-vcf-format)
+  * [Step 6: Visualize Reads and Genomics Variants](#step-6--visualize-reads-and-genomics-variants)
+* [References for Further Reading](#references-for-further-reading)
 * [Footnotes](#footnotes)
 * [Glossary](#glossary)
 * [License](#license)
 
-## <a id="revisions">Revisions</a> ##
+## Revisions ##
 
 * 0.1: April 23, 2013:  This document is **currently a work in progress.  It is not ready for release.**
 
-## <a id="about">About</a> ##
+## About ##
 
 SAMtools is a popular open-source tool, commonly used in next-generation sequence analysis.  This short primer provides an introduction to using SAMtools, and is geared towards those new to next-generation sequence analysis.  The primer is also designed to be self-contained and hands-on, meaning that you only need to install SAMtools, and no other tools, and sample data sets are provided.  Terms in **bold** are also explained in the short glossary at the end of the document.
 
-## <a id="data">Downloading the Sample Data Files</a> ##
+## Downloading the Sample Data Files ##
 
 You can access all the sample data files for this primer from the [companion github repository](https://github.com/ecerami/samtools_primer).
 
@@ -43,7 +44,7 @@ From the repository, you can:
 * download a [complete zip file containing everything](https://github.com/ecerami/samtools_primer/archive/master.zip).
 * clone the entire repository.  If you have never used Github before, there is a [comprehensive tutorial to get you started](https://help.github.com/articles/set-up-git).
 
-## <a id="intro">Introduction to SAMtools and Next-Generation Sequence Analysis</a>
+## Introduction to SAMtools and Next-Generation Sequence Analysis
 
 Next-generation sequencing refers to new, cheaper, high-throughput technologies for sequencing the DNA or RNA of a single sample or a group of samples.  A typical work-flow for next-generation sequence analysis is usually composed of multiple steps:
 
@@ -51,7 +52,7 @@ Next-generation sequencing refers to new, cheaper, high-throughput technologies 
 
 SAMtools fits in at steps 4 and 5.  Most importantly, it can process aligned sequence reads, and manipulate them with ease.  For example, it can convert between the two most common file formats (SAM and BAM), sort and index files (for speedy retrieval later), and extract specific genomic regions of interest.  It also enables quality checking of reads, and automatic identification of genomic variants.
 
-## <a id="download">Downloading and Installing SAMtools</a>
+## Downloading and Installing SAMtools
 
 To get started with the rest of this primer, download the SAMtools source code from [SourceForge.net](http://sourceforge.net/projects/samtools/files/).  Then, unzip and unpack the distribution to your preferred location &ndash;&ndash; for example, I have placed samtools at:  ~/libraries/samtools-0.1.19/.
 
@@ -70,13 +71,13 @@ And, add the executables to your path.  For example, I have modified my `.bash_p
 
 As an optional, but recommended step, copy the man page for `samtools.1` to one of your man page directories (1). 
 
-## <a id="tutorial">Tutorial:  A Complete Workflow for Identifying SNPs in E. coli</a>
+## Tutorial:  A Complete Workflow for Identifying SNPs in E. coli
 
 To illustrate the use of SAMtools, the remainder of this document focuses on using SAMtools within a complete sample workflow for next-generation sequence analysis.  For simplicity, the tutorial uses a small set of simulated reads from *E. coli*.  I have chosen *E. coli* because its genome is quite small -- 4,649 kilobases, with 4,405 genes, and its entire genome fits into a single **FASTA** file of 4.8 megabytes.  The sample read file is also small -- just 790K -- enabling you to download both within a few minutes.  
 
 If you are new to next-generation sequence analysis, you will soon find that one of the biggest obstacles is just finding and downloading sample data sets, and then downloading the very large reference genomes.  By focusing on *E. coli* and simulated data sets, you can start small, learn the tool sets, and then advance to other organisms and larger sample data sets.
 
-### <a id="overview">An Overview</a>
+### An Overview
 
 The workflow below is organized into six steps (see Figure 2 below).
 
@@ -84,7 +85,7 @@ The workflow below is organized into six steps (see Figure 2 below).
 
 Steps 3-6 are focused on the use of SAMtools.  Steps 1-2 require the use of other tools.  Steps 1-2 do, however provide important context, may be helpful in the future, and are therefore described below.  That said, you are not required to actually perform any of steps yourself now, as intermediate files from these steps are available for download.  You can download these intermediate files directly and proceed with steps 3-6.
 
-### <a id="step1">Step 1:  Generate Simulated Reads</a>
+### Step 1:  Generate Simulated Reads
 
 First, we need a small set of sample read data.  A number of tools, including [ArtificialFastqGenerator](http://sourceforge.net/p/artfastqgen/wiki/Home/), [SimSeq](https://github.com/jstjohn/SimSeq), will generate artificial or simulated sequence data for you.  For this tutorial, I chose to use the [wgsim](https://github.com/lh3/wgsim) tool (created by Heng Li, also the creator of SAMtools).
 
@@ -122,7 +123,7 @@ Note that in the FASTQ format, the first line specifies a unique sequence identi
 
 You can download the [artificial reads from github](https://raw.github.com/ecerami/samtools_primer/master/tutorial/simulated_reads/sim_reads.fq) if you like, but this is not required for the rest of the tutorial.
 
-### <a id="step2">Step 2:  Align Reads to a Reference Genome</a>
+### Step 2:  Align Reads to a Reference Genome
 
 The next step is to align the artificial reads to the reference genome for *e. coli.*  For this, I have chosen to use the widely used [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) aligner, from Johns Hopkins University.  Again, you need not actually perform this step to use SAMtools, but it does provide important context, so I have included the details.
 
@@ -140,7 +141,7 @@ This directs bowtie to align the simulated reads against the *e_coli* reference 
 
 For additional details on using bowtie2, refer to the [online manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml).
 
-### <a id="sam_format">Understanding the SAM Format</a>
+### Understanding the SAM Format
 
 As SAMtools is primarily concerned with manipulating SAM files, it is useful to take a moment to examine the sample SAM file generated by bowtie, and to dive into the details of the SAM file format itself.  The first six lines from the bowtie SAM file are extracted below:
 
@@ -256,7 +257,7 @@ Following the 11 mandatory fields, each alignment can also have a variable numbe
 		</td>
 </table>
 
-### <a id="step3">Step 3:  Convert the Aligned Reads from SAM to BAM</a>
+### Step 3:  Convert the Aligned Reads from SAM to BAM
 
 Now that you understand where alignments come from, know how to interpret SAM fields, and have a sample [SAM file to play with](tutorial/alignments/sim_reads_aligned.sam), you are finally read to tackle SAMtools.  As described above, our goal is to identify the set of genomic variants within the *e. coli* data set.  To do so, our first step is to convert the SAM file to BAM.  This is an important prerequisite, as all the downstream steps, including the identification of genomic variants and visualization of reads, require BAM as input.
 
@@ -298,7 +299,7 @@ Finally, you can use the `-q` parameter to indicate a minimal quality mapping fi
 	
 outputs the total number of aligned reads (819) that have a mapping quality score of 42 or higher.
 
-### <a id="step4">Step 4:  Sort and Index the BAM File</a>
+### Step 4:  Sort and Index the BAM File
 
 The next step is to sort and index the BAM file.  There are two options for sorting BAM files:  by read name (`-n`), and by genomic location (default).  As our goal is to call genomic variants, and this requires that we "pile-up" all matching reads within a specific genomic location, we sort by location:
 
@@ -341,7 +342,7 @@ This reads in the sorted BAM file, and creates a BAM index file with the `.bai` 
 	</tr>
 </table>
 
-### <a id="step5">Step 5:  Identify Genomic Variants</a>
+### Step 5:  Identify Genomic Variants
 
 Now, we are ready to identify the genomic variants from our reads.  Doing so requires two steps, and
 while one can easily pipe these two steps together, I have broken them out into two distinct steps below for 
@@ -369,7 +370,7 @@ The second step is to use `bcftools`, which is packaged with SAMtools, but locat
 
 The `bcftools view` command uses the genotype likelihoods generated from the previous step to call SNPs and indels, and outputs the all identified variants in the **variant call format (VFC)**, the file format created for the [1000 Genomes Project](http://www.1000genomes.org/), and now widely used to represent genomic variants.
 
-### <a id="vcf">Understanding the VCF Format</a>
+### Understanding the VCF Format
 
 If you take a peak at our newly generated `sim_variants.vcf` file, and scroll down to the first line not starting with a # symbol, you will see our lone single nucleotide variant (SNV).  And, if all has gone well, it should match the SNV at position 736 output by `wgsim` way back in Step 1!  Congratulations!
 
@@ -446,7 +447,7 @@ This indicates that the GG genotype is very likely the true genotype in your sam
 
 * wgsim [repository on github](https://github.com/lh3/wgsim).
 
-## <a id="footnotes">Footnotes</a>
+## Footnotes
 
 [1]  If you are uncertain where to copy the samtools man page, or are uncertain where your existing man pages are located, try typing:
 
@@ -466,7 +467,7 @@ With three alleles, and the assumption that we are working with a diploid organi
 
 [6] But, wait!  The *e. coli* genome is haploid, i.e. there is only a single set of genes.  And, there is therefore never the possibility of having two alleles at the same position.  SAMtools, however is designed to work with diploid genomes, and always calculates genotypes based on the assumption of a diploid genome.  To get around this assumption in our simulated case, we can assume that the *e. coli* reads come from a pool of samples, and the genotypes represent alternatives alleles present in the pool.
 
-## <a id="glossary">Glossary</a>
+## Glossary
 
 **alignment**:  the mapping of a raw sequence read to a location within a reference genome.  The mapping occurs because the sequences within the raw read match or align to sequences within the reference genome.  Alignment information is stored in the **SAM** or **BAM** file formats.
 
@@ -512,7 +513,7 @@ With three alleles, and the assumption that we are working with a diploid organi
 
 **VCF Format**:  Variant call format.  Text file format for storing genomic variants, including single nucleotide polymorphisms, insertions, deletions and structural rearrangement.
 
-## <a id="license">License</a>
+## License
 ![Creative Commons](http://i.creativecommons.org/l/by/3.0/88x31.png)
 
 SAMtools:  A Primer, by Ethan Cerami is licensed under a [Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/deed.en_US).
