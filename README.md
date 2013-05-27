@@ -4,12 +4,9 @@ by Ethan Cerami, Ph.D.
 
 **keywords:**  samtools, next-gen, next-generation, sequencing, bowtie, sam, bam, primer, tutorial, how-to, introduction
 
-* auto-gen TOC:
-{:toc}
-
 ## Table of Contents
 
-* Revisions
+* <a id="revisons">Revisions</a>
 * About
 * Downloading the Sample Data Files
 * Introduction to SAMtools and Next-Generation Sequence Analysis
@@ -28,7 +25,7 @@ by Ethan Cerami, Ph.D.
 * Glossary
 * License
 
-## Revisons ##
+## [Revisons](#revisions) ##
 
 * 0.1: April 23, 2013:  This document is **currently a work in progress.  It is not ready for release.**
 
