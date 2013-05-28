@@ -445,6 +445,20 @@ You can toggle a mini help screen by pressing the `?` key, and from here determi
 
 ![SAMTools tview:  Genomic variant at position 736](https://raw.github.com/ecerami/samtools_primer/master/figs/tview2.png "SAMTools tview:  Genomic variant at position 736")
 
+<table width=100%>
+	<tr bgcolor=#cccccc>
+		<th align=left>
+		Gothca:  Goto a specific location.
+		</th>
+	</tr>
+	<tr>
+	<td>
+	Within tview you can press <b>g</b> to go to a specific genomic location.  However, if you type <b>g</b> and enter a position, such as 736, nothing will happen.  This is because the location must be specified in the form:  <b>RNAME:position</b>, e.g. for human data, you would type:  <b>chr3:200000</b>.  In our case, the RNAME is set to the identifier associated with the full genome, which is:  gi|110640213|ref|NC_008253.1|.  Therefore, to jump to position 736, you would have to enter the rather long string:  <b>gi|110640213|ref|NC_008253.1|:736</b>.
+	</td>
+	</tr>
+</table>
+
+
 ## References for Further Reading
 
 Hopefully, this primer has helped you take your first steps into the world of SAMTools and next-generation sequence analysis.  To continue on, I recommend the following resources:  
