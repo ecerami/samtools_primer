@@ -439,7 +439,15 @@ You will see a screen, such as the one shown below.
 
 ![SAMTools tview](https://raw.github.com/ecerami/samtools_primer/master/figs/tview.png "SAMTools tview")
 
+In this view, the first line shows the genome coordinates, the second line shows the reference sequence, and the third line shows the consensus sequence determined from the aligned reads.  Throughout `tview`, a `.` indicates a match to the reference genome.
+
+You can toggle a mini help screen by pressing the `?` key, and from here determine the main keys for navigating across your reads.  For example, you can use the `h,j,k,l` keys (or the cursor keys) to make small movements. For now, let's zero in on our identified variant at position 736.  To do so, press the space bar a few times until you get to 730.  Here you can see that the consensus call is a G v. reference of T, and you can scroll through all the aligned reads by pressing the down cursor key.
+
+![SAMTools tview:  Genomic variant at position 736](https://raw.github.com/ecerami/samtools_primer/master/figs/tview2.png "SAMTools tview:  Genomic variant at position 736")
+
 ## References for Further Reading
+
+Hopefully, this primer has helped you take your first steps into the world of SAMTools and next-generation sequence analysis.  To continue on, I recommend the following resources:  
 
 * Bowtie2 [Home](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml), and [Online Manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml).
 
