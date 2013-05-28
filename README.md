@@ -28,7 +28,8 @@ by Ethan Cerami, Ph.D.
 
 ## Revisions ##
 
-* 0.1: April 23, 2013:  This document is **currently a work in progress.  It is not ready for release.**
+* 0.1: April 23, 2013:  Work in progress; not ready for release.
+* 0.2:  May 27, 2013:  Nearing a final draft.  Opening for public comment.
 
 ## About ##
 
