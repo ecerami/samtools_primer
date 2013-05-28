@@ -6,7 +6,7 @@ by Ethan Cerami, Ph.D.
 
 ## Table of Contents
 
-* [Revisons](#revisions)
+* [Revisions](#revisions)
 * [About](#about)
 * [Downloading the Sample Data Files](#downloading-the-sample-data-files)
 * [Introduction to SAMtools and Next-Generation Sequence Analysis](#introduction-to-samtools-and-next-generation-sequence-analysis)
@@ -269,7 +269,7 @@ To convert from SAM to BAM, use the samtools `view` command:
 * `-S`:  indicates that the input is SAM.
 * `-o`:  specified the name of the output file.
 
-BAM files are stored in a compressed, binary format, and cannot be viewed directly.  However, you can use the same `view` command to display all aligments.  For example, running:
+BAM files are stored in a compressed, binary format, and cannot be viewed directly.  However, you can use the same `view` command to display all alignments.  For example, running:
 
 	samtools view alignments/sim_reads_aligned.bam | more
 
@@ -448,7 +448,7 @@ You can toggle a mini help screen by pressing the `?` key, and from here determi
 <table width=100%>
 	<tr bgcolor=#cccccc>
 		<th align=left>
-		Gothca:  Goto a specific location.
+		Gotcha:  Goto a specific location.
 		</th>
 	</tr>
 	<tr>
